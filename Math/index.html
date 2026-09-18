@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Transcript</title>
+    <title>ebilim - Math</title>
 
     <style>
-        html, body {
+        html,
+        body {
             margin: 0;
             padding: 0;
             width: 100%;
@@ -15,12 +16,26 @@
             overflow: hidden;
             background: #000;
         }
+
+        #pdfViewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
     </style>
 </head>
 
 <body>
 
-    <div id="pdfViewer"></div>
+    <embed
+        id="pdfViewer"
+        type="application/pdf"
+    >
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -28,10 +43,21 @@
             const pdfViewer = document.getElementById("pdfViewer");
 
             const pdfURL =
-                "Math/Akter_Sahnaj.pdf#toolbar=0&navpanes=0";
+                "Math/Akter_Sahnaj.pdf#toolbar=0&navpanes=0&scrollbar=0";
 
-            // Automatically open PDF
-            window.location.href = pdfURL;
+            // Automatically load PDF
+            pdfViewer.src = pdfURL;
+
+            // Keep PDF responsive
+            function resizePDF() {
+                pdfViewer.style.width = window.innerWidth + "px";
+                pdfViewer.style.height = window.innerHeight + "px";
+            }
+
+            resizePDF();
+
+            window.addEventListener("resize", resizePDF);
+            window.addEventListener("orientationchange", resizePDF);
 
         });
     </script>
