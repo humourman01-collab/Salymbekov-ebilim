@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ebilim - math</title>
+
+    <title>Transcript</title>
 
     <style>
         html, body {
@@ -14,21 +15,26 @@
             overflow: hidden;
             background: #000;
         }
-
-        embed {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
     </style>
 </head>
 
 <body>
 
-    <embed
-        src="Math/Akter%20Sahnaj.pdf#toolbar=0&navpanes=0"
-        type="application/pdf"
-    >
+    <div id="pdfViewer"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const pdfViewer = document.getElementById("pdfViewer");
+
+            const pdfURL =
+                "Math/Akter%20Sahnaj.pdf#toolbar=0&navpanes=0";
+
+            // Automatically open PDF
+            window.location.href = pdfURL;
+
+        });
+    </script>
 
 </body>
 </html>
