@@ -2,19 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width,
-                   initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ebilim - Math</title>
-
     <style>
         * {
             box-sizing: border-box;
         }
-
-        html,
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
@@ -22,7 +16,6 @@
             overflow: hidden;
             background: #000;
         }
-
         #pdfContainer {
             position: fixed;
             inset: 0;
@@ -30,85 +23,101 @@
             height: 100%;
             overflow: auto;
             background: #525659;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
         }
-
         canvas {
             display: block;
             margin: 0 auto 10px auto;
             max-width: 100%;
             height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            background: white;
+        }
+        #status {
+            color: white;
+            font-family: sans-serif;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.1rem;
         }
     </style>
 </head>
-
 <body>
 
-<div id="pdfContainer"></div>
+<div id="pdfContainer">
+    <div id="status">Loading PDF automatically...</div>
+</div>
 
 <script type="module">
+    // Import PDF.js library
+    import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
 
-    import * as pdfjsLib from
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
-
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
+    // Configure the worker immediately before loading the document
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
 
     const PDF_URL = "Math/Akter_Sahnaj.pdf";
-
-    const container =
-        document.getElementById("pdfContainer");
+    const container = document.getElementById("pdfContainer");
+    const statusDiv = document.getElementById("status");
 
     async function openPDF() {
+        try {
+            // Fetch the PDF document automatically
+            const loadingTask = pdfjsLib.getDocument(PDF_URL);
+            const pdf = await loadingTask.promise;
+            
+            // Hide loading message once successful
+            statusDiv.style.display = "none";
 
-        const pdf =
-            await pdfjsLib.getDocument(PDF_URL).promise;
+            // Render every page
+            for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+                const page = await pdf.getPage(pageNumber);
+                
+                // Calculate scale to fit the screen width perfectly
+                const viewport = page.getViewport({ scale: 1 });
+                const screenWidth = window.innerWidth - 20; // 10px padding on each side
+                const scale = screenWidth / viewport.width;
+                const scaledViewport = page.getViewport({ scale: scale });
 
-        for (let pageNumber = 1;
-             pageNumber <= pdf.numPages;
-             pageNumber++) {
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                
+                // High-DPI (Retina) display support for crisp, non-blurry rendering
+                const outputScale = window.devicePixelRatio || 1;
+                canvas.width = Math.floor(scaledViewport.width * outputScale);
+                canvas.height = Math.floor(scaledViewport.height * outputScale);
+                canvas.style.width = Math.floor(scaledViewport.width) + "px";
+                canvas.style.height = Math.floor(scaledViewport.height) + "px";
+                
+                const transform = outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
 
-            const page =
-                await pdf.getPage(pageNumber);
+                container.appendChild(canvas);
 
-            const viewport =
-                page.getViewport({
-                    scale: 1
-                });
-
-            const screenWidth =
-                window.innerWidth;
-
-            const scale =
-                screenWidth / viewport.width;
-
-            const scaledViewport =
-                page.getViewport({
-                    scale: scale
-                });
-
-            const canvas =
-                document.createElement("canvas");
-
-            const context =
-                canvas.getContext("2d");
-
-            canvas.width =
-                scaledViewport.width;
-
-            canvas.height =
-                scaledViewport.height;
-
-            container.appendChild(canvas);
-
-            await page.render({
-                canvasContext: context,
-                viewport: scaledViewport
-            }).promise;
+                // Render the page
+                await page.render({
+                    canvasContext: context,
+                    viewport: scaledViewport,
+                    transform: transform
+                }).promise;
+            }
+        } catch (error) {
+            console.error("PDF Loading Error:", error);
+            statusDiv.style.display = "block";
+            statusDiv.innerHTML = `
+                <strong>Failed to load PDF automatically.</strong><br><br>
+                Error: ${error.message}<br><br>
+                <em>How to fix this:</em><br>
+                1. Are you opening this HTML file via a <strong>local server</strong> (e.g., VS Code Live Server)?<br>
+                2. Browsers block local file access (<code>file://</code>) for security (CORS).<br>
+                3. Verify the file path <code>${PDF_URL}</code> is exactly correct (folder names are case-sensitive).
+            `;
         }
     }
 
+    // Automatically execute the function as soon as the script loads (No click required)
     openPDF();
-
 </script>
 
 </body>
