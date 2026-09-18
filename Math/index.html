@@ -1,80 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ebilim - math</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            background: #111;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        /* Mobile-responsive container for fallback navigation */
-        .pdf-header {
-            background: #222;
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #333;
-        }
-        .view-btn {
-            display: inline-block;
-            background: #007bff;
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-        .view-btn:hover {
-            background: #0056b3;
-        }
-        /* Responsive Embed Viewport */
-        .pdf-container {
-            flex: 1;
-            width: 100%;
-            height: 100%;
-        }
-        object, embed, iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Header helper ensures mobile users can manually bypass if embed fails -->
-    <div class="pdf-header">
-        <a href="Math/Akter Sahnaj.pdf" target="_blank" class="view-btn" id="open-btn">
-            Open PDF in New Tab
-        </a>
-    </div>
-
-    <!-- Enhanced fallback responsive embed container -->
-    <div class="pdf-container">
-        <object data="Math/Akter Sahnaj.pdf#toolbar=0&navpanes=0" type="application/pdf">
-            <iframe src="Math/Akter Sahnaj.pdf#toolbar=0&navpanes=0"></iframe>
-        </object>
-    </div>
+    <title>Math PDF</title>
 
     <script>
-        // Eliminates the blocked window.onload popup loop
-        // Standard browsers will display the embedded viewer below the bar
-        document.getElementById('open-btn').addEventListener('click', function() {
-            // Handled cleanly by standard user browser interaction rules
-        });
+        window.location.replace("Math/Akter%20Sahnaj.pdf#toolbar=0&navpanes=0");
     </script>
+</head>
+<body>
 </body>
 </html>
